@@ -1,0 +1,11 @@
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+  <application>todolist</application>
+  <version>1</version>
+
+  <static-files/>
+  <system-properties>
+    <property name="todolist.persistence.standard" value="JPA"/>
+  </system-properties>
+  <resource-files/>
+  <threadsafe>true</threadsafe>
+</appengine-web-app>
