@@ -8,12 +8,12 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jboss.sample</groupId>
-    <artifactId>gae-sample-todolist</artifactId>
+    <groupId>org.jboss.capedwarf</groupId>
+    <artifactId>todolist-app</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
     <name>ToDo List</name>
-    <description>Sampe todo list application.</description>
+    <description>Sampe TODO list application.</description>
 
     <properties>
         <version.com.google.gae.api>1.7.0</version.com.google.gae.api>
