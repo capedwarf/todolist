@@ -50,6 +50,9 @@ public class Index extends HttpServlet {
 
 	@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	    System.out.println("Requested from: " + request.getRemoteAddr());
+
         TasksDAO tasksDAO = new TasksDAO();
 
 	    PrintWriter out = response.getWriter();
