@@ -4,7 +4,7 @@
  <servlet>
   <display-name>index</display-name>
   <servlet-name>index</servlet-name>
-  <servlet-class>org.jboss.sample.todolist.servlet.Index</servlet-class>
+  <servlet-class>org.jboss.todolist.servlet.Index</servlet-class>
  </servlet>
  <servlet-mapping>
   <servlet-name>index</servlet-name>
