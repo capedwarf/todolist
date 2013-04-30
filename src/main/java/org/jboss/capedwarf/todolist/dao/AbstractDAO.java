@@ -22,12 +22,11 @@
 
 package org.jboss.capedwarf.todolist.dao;
 
-import com.google.appengine.api.search.Consistency;
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Field;
+import com.google.appengine.api.search.GetRequest;
 import com.google.appengine.api.search.Index;
 import com.google.appengine.api.search.IndexSpec;
-import com.google.appengine.api.search.ListRequest;
 import com.google.appengine.api.search.SearchService;
 import com.google.appengine.api.search.SearchServiceFactory;
 
@@ -61,25 +60,21 @@ public abstract class AbstractDAO {
         return builder.build();
     }
 
-    protected Index getTestIndex() {
-        return getIndex("testIndex");
+    protected Index getIndex() {
+        return getIndex("todoIndex");
     }
 
     protected Index getIndex(String name) {
-        return getIndex(name, Consistency.GLOBAL);
-    }
-
-    protected Index getIndex(String name, Consistency consistency) {
-        IndexSpec indexSpec = getIndexSpec(name, consistency);
+        IndexSpec indexSpec = getIndexSpec(name);
         return service.getIndex(indexSpec);
     }
 
-    protected IndexSpec getIndexSpec(String name, Consistency consistency) {
-        return IndexSpec.newBuilder().setName(name).setConsistency(consistency).build();
+    protected IndexSpec getIndexSpec(String name) {
+        return IndexSpec.newBuilder().setName(name).build();
     }
 
-    protected ListRequest defaultListRequest() {
-        return ListRequest.newBuilder().build();
+    protected GetRequest defaultListRequest() {
+        return GetRequest.newBuilder().build();
     }
 
     protected String generateId() {
