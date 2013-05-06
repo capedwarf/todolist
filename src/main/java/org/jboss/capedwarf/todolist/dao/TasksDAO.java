@@ -49,7 +49,7 @@ public class TasksDAO extends AbstractDAO {
         if (id == null) {
             id = generateId();
         }
-        getTestIndex().add(newDocument(id,
+        getIndex().put(newDocument(id,
                 newField(ID).setText(id),
                 newField(TASK_DONE).setText(task.isTaskDone() ? "true" : "false"),
                 newField(MESSAGE).setText(task.getMessage())));
@@ -76,7 +76,7 @@ public class TasksDAO extends AbstractDAO {
     }
 
     public void delete(String id) {
-        getTestIndex().remove(id);
+        getIndex().delete(id);
     }
 
     private Task getTaskById(String id) {
@@ -85,7 +85,7 @@ public class TasksDAO extends AbstractDAO {
     }
 
     private ScoredDocument getTaskDoc(String id) {
-        Collection<ScoredDocument> docs = getTestIndex().search(ID + ":" + id).getResults();
+        Collection<ScoredDocument> docs = getIndex().search(ID + ":" + id).getResults();
         if (docs.size() != 1) {
             throw new RuntimeException("Invalid id specified.");
         }
@@ -97,7 +97,7 @@ public class TasksDAO extends AbstractDAO {
     private List<Task> queryTasks(String q) {
         List<Task> result = new ArrayList<Task>();
 
-        Collection<ScoredDocument> searchResult = getTestIndex().search(MESSAGE + ":" + q).getResults();
+        Collection<ScoredDocument> searchResult = getIndex().search(MESSAGE + ":" + q).getResults();
 
         for (ScoredDocument scoredDocument : searchResult) {
             result.add(createTask(scoredDocument));
@@ -107,7 +107,7 @@ public class TasksDAO extends AbstractDAO {
 
     private List<Task> getAllTasks() {
         List<Task> result = new ArrayList<Task>();
-        List<Document> searchResult = getTestIndex().listDocuments(defaultListRequest()).getResults();
+        List<Document> searchResult = getIndex().getRange(defaultListRequest()).getResults();
 
         for (Document document : searchResult) {
             result.add(createTask(document));
