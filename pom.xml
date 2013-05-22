@@ -16,17 +16,16 @@
     <description>Sampe TODO list application.</description>
 
     <properties>
-        <version.com.google.gae.api>1.7.7.1</version.com.google.gae.api>
+        <version.com.google.gae.api>1.8.0</version.com.google.gae.api>
         <version.org.jboss.spec.javax.servlet.api>1.0.0.Final</version.org.jboss.spec.javax.servlet.api>
     </properties>
-        
+
     <dependencies>
 
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
             <version>${version.com.google.gae.api}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

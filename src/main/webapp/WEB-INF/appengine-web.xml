@@ -3,13 +3,11 @@
   <version>1</version>
 
   <static-files/>
-  <system-properties>
-    <property name="todolist.persistence.standard" value="JPA"/>
-  </system-properties>
   <resource-files/>
   <threadsafe>true</threadsafe>
-  
+
   <system-properties>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+    <property name="todolist.persistence.standard" value="JPA"/>
   </system-properties>
 </appengine-web-app>
