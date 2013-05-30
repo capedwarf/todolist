@@ -31,6 +31,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import org.jboss.capedwarf.todolist.dao.TasksDAO;
 import org.jboss.capedwarf.todolist.domain.Task;
 import org.jboss.capedwarf.todolist.html.HtmlHelper;
@@ -43,17 +46,37 @@ import org.jboss.capedwarf.todolist.html.HtmlPage;
 public class Index extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+    private TasksDAO tasksDAO;
+    private UserService userService;
+
     public Index() {
         super();
     }
 
-	@Override
+    @Override
+    public void init() throws ServletException {
+        super.init();
+
+        tasksDAO = new TasksDAO();
+        userService = UserServiceFactory.getUserService();
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        User user = userService.getCurrentUser();
+        if (user != null) {
+            doTasks(request, response);
+        } else {
+            doLogin(request, response);
+        }
+    }
 
-	    System.out.println("Requested from: " + request.getRemoteAddr());
+    protected void doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String loginURL = userService.createLoginURL("/");
+        response.sendRedirect(loginURL);
+    }
 
-        TasksDAO tasksDAO = new TasksDAO();
-
+    protected void doTasks(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    PrintWriter out = response.getWriter();
 
 	    String q = request.getParameter("q");
@@ -82,13 +105,18 @@ public class Index extends HttpServlet {
 	    }
 
         HtmlPage htmlPage = new HtmlPage(request.getContextPath());
-        htmlPage.addToBody(HtmlHelper.getTitle("ToDo LiSt"));
+        htmlPage.addToBody(HtmlHelper.getTitle("ToDo LiSt - ViEw"));
+        htmlPage.addToBody(getLogut());
 	    htmlPage.addInputForm(q);
 	    htmlPage.addToBody(getToDoList(tasksDAO, q));
 
 	    response.setContentType("text/html");
 	    out.println(htmlPage.getHtml());
 	}
+
+    private String getLogut() {
+        return HtmlHelper.getLogout();
+    }
 
     private String getToDoList(TasksDAO tasksDAO, String q) {
         List<Task> tasks = tasksDAO.getTaskList(q);

@@ -24,6 +24,8 @@ package org.jboss.capedwarf.todolist.html;
 
 import java.util.List;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import org.jboss.capedwarf.todolist.domain.Task;
 
 /**
@@ -36,15 +38,15 @@ public class HtmlHelper {
         html += "<table class=\"table table-hover\">\n";
 
         for (Task task : tasks) {
-            String onClickDone="onclick=\"document.location='?q=" + q + "&" + (task.isTaskDone() ? "markNotDone" : "markDone") + "=" + task.getId() + "'\"";
-            String onClickRemove="onclick=\"document.location='?q=" + q + "&remove=" + task.getId() + "'\"";
+            String onClickDone = "onclick=\"document.location='?q=" + q + "&" + (task.isTaskDone() ? "markNotDone" : "markDone") + "=" + task.getId() + "'\"";
+            String onClickRemove = "onclick=\"document.location='?q=" + q + "&remove=" + task.getId() + "'\"";
 
             html += "<tr>\n";
             html += "<td>\n";
             html += "<label class=\"checkbox\">\n";
             html += "<input type=\"checkbox\"" + (task.isTaskDone() ? "checked=\"checked\"" : "");
             html += " " + onClickDone + "/>\n";
-            html += "<span class=\"" + (task.isTaskDone() ? "taskDone" : "taskNotDone") + "\">" +  task.getMessage() + "</span>\n";
+            html += "<span class=\"" + (task.isTaskDone() ? "taskDone" : "taskNotDone") + "\">" + task.getMessage() + "</span>\n";
             html += "</label>\n";
             html += "</td>\n";
             html += "<td width=\"20px\">\n";
@@ -60,8 +62,11 @@ public class HtmlHelper {
     public static String getTitle(String title) {
         String html = "\n";
         html += "<h1>" + title + "</h1>";
-
         return html;
     }
 
+    public static String getLogout() {
+        UserService userService = UserServiceFactory.getUserService();
+        return "\n<a href=\"" + userService.createLogoutURL("/") + "\" style=\"float:right\">Logout</a><p/>\n";
+    }
 }

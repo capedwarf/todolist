@@ -26,10 +26,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jboss.capedwarf.todolist.domain.Task;
-
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.ScoredDocument;
+import org.jboss.capedwarf.todolist.domain.Task;
 
 /**
  * @author Matej Lazar
@@ -37,6 +36,7 @@ import com.google.appengine.api.search.ScoredDocument;
 public class TasksDAO extends AbstractDAO {
 
     private static final String ID = "id";
+    private static final String USERNAME = "username";
     private static final String TASK_DONE = "taskDone";
     private static final String MESSAGE = "message";
 
@@ -50,9 +50,9 @@ public class TasksDAO extends AbstractDAO {
             id = generateId();
         }
         getIndex().put(newDocument(id,
-                newField(ID).setText(id),
-                newField(TASK_DONE).setText(task.isTaskDone() ? "true" : "false"),
-                newField(MESSAGE).setText(task.getMessage())));
+            newField(ID).setText(id),
+            newField(TASK_DONE).setText(task.isTaskDone() ? "true" : "false"),
+            newField(MESSAGE).setText(task.getMessage())));
     }
 
     public List<Task> getTaskList(String q) {
@@ -92,7 +92,6 @@ public class TasksDAO extends AbstractDAO {
 
         return docs.iterator().next();
     }
-
 
     private List<Task> queryTasks(String q) {
         List<Task> result = new ArrayList<Task>();
