@@ -31,8 +31,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -40,6 +38,8 @@ import org.jboss.capedwarf.todolist.dao.TasksDAO;
 import org.jboss.capedwarf.todolist.domain.Task;
 import org.jboss.capedwarf.todolist.html.HtmlHelper;
 import org.jboss.capedwarf.todolist.html.HtmlPage;
+import org.jboss.capedwarf.todolist.log.AuditLog;
+import org.jboss.capedwarf.todolist.log.DsAuditLog;
 import org.jboss.capedwarf.todolist.queue.QueueHelper;
 
 /**
@@ -49,9 +49,9 @@ import org.jboss.capedwarf.todolist.queue.QueueHelper;
 public class Index extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+    private AuditLog auditLog;
     private TasksDAO tasksDAO;
     private UserService userService;
-    private DatastoreService datastoreService;
 
     public Index() {
         super();
@@ -61,16 +61,21 @@ public class Index extends HttpServlet {
     public void init() throws ServletException {
         super.init();
 
+        auditLog = new DsAuditLog();
         tasksDAO = new TasksDAO();
         userService = UserServiceFactory.getUserService();
-        datastoreService = DatastoreServiceFactory.getDatastoreService();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = userService.getCurrentUser();
         if (user != null) {
-            doTasks(request, response);
+            String from = request.getParameter("from");
+            if (from != null) {
+                doFetch(request, response, user);
+            } else {
+                doTasks(request, response, user);
+            }
         } else {
             doLogin(request, response);
         }
@@ -81,9 +86,19 @@ public class Index extends HttpServlet {
         response.sendRedirect(loginURL);
     }
 
-    protected void doTasks(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    PrintWriter out = response.getWriter();
+    protected void doFetch(HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
+        HtmlPage htmlPage = new HtmlPage(request.getContextPath());
+        htmlPage.addToBody(HtmlHelper.getTitle("ToDo LiSt - AuDiT LoG"));
+        htmlPage.addToBody(getLogut());
+        htmlPage.addToBody(HtmlHelper.auditLogsAsHtml(auditLog.fetch(Long.parseLong(request.getParameter("from")))));
 
+        response.setContentType("text/html");
+
+        PrintWriter out = response.getWriter();
+        out.println(htmlPage.getHtml());
+    }
+
+    protected void doTasks(HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
 	    String q = request.getParameter("q");
 	    if (q == null) {
 	        q = "";
@@ -102,18 +117,23 @@ public class Index extends HttpServlet {
             if (datetime != null && datetime.length() > 0) {
                 QueueHelper.getInstance().addTask(task, datetime);
             }
+
+            auditLog.log(user, task.getId(), "add");
         }
 
 	    if (markDoneTask != null && !markDoneTask.isEmpty()) {
 	        tasksDAO.markTaskDone(markDoneTask);
+            auditLog.log(user, markDoneTask, "mark-done");
 	    }
 
 	    if (markNotDoneTask != null && !markNotDoneTask.isEmpty()) {
 	        tasksDAO.markTaskNotDone(markNotDoneTask);
+            auditLog.log(user, markNotDoneTask, "mark-not-done");
 	    }
 
 	    if (removeTask != null && !removeTask.isEmpty()) {
 	        tasksDAO.delete(removeTask);
+            auditLog.log(user, removeTask, "remove");
 	    }
 
         HtmlPage htmlPage = new HtmlPage(request.getContextPath());
@@ -123,7 +143,9 @@ public class Index extends HttpServlet {
 	    htmlPage.addToBody(getToDoList(tasksDAO, q));
 
 	    response.setContentType("text/html");
-	    out.println(htmlPage.getHtml());
+
+        PrintWriter out = response.getWriter();
+        out.println(htmlPage.getHtml());
 	}
 
     private String getLogut() {

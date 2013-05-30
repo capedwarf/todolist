@@ -69,4 +69,23 @@ public class HtmlHelper {
         UserService userService = UserServiceFactory.getUserService();
         return "\n<a href=\"" + userService.createLogoutURL("/") + "\" style=\"float:right\">Logout</a><p/>\n";
     }
+
+    public static String auditLogsAsHtml(Object[][] logs) {
+        String html = "\n";
+        html += "<table class=\"table table-hover\">\n";
+
+        html += "<tr><td>UserId</td><td>TaskId</td><td>Action</td></tr>\n";
+        for (Object[] row : logs) {
+            html += "<tr>\n";
+            for (Object elt : row) {
+                html += "<td>\n";
+                html += String.valueOf(elt) + "\n";
+                html += "</td>\n";
+            }
+            html += "</tr>\n";
+        }
+        html += "</table>\n";
+        html += "\n";
+        return html;
+    }
 }
