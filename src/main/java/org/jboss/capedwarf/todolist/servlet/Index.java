@@ -31,6 +31,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -38,6 +40,7 @@ import org.jboss.capedwarf.todolist.dao.TasksDAO;
 import org.jboss.capedwarf.todolist.domain.Task;
 import org.jboss.capedwarf.todolist.html.HtmlHelper;
 import org.jboss.capedwarf.todolist.html.HtmlPage;
+import org.jboss.capedwarf.todolist.queue.QueueHelper;
 
 /**
  * Servlet implementation class Index
@@ -48,6 +51,7 @@ public class Index extends HttpServlet {
 
     private TasksDAO tasksDAO;
     private UserService userService;
+    private DatastoreService datastoreService;
 
     public Index() {
         super();
@@ -59,6 +63,7 @@ public class Index extends HttpServlet {
 
         tasksDAO = new TasksDAO();
         userService = UserServiceFactory.getUserService();
+        datastoreService = DatastoreServiceFactory.getDatastoreService();
     }
 
     @Override
@@ -88,9 +93,16 @@ public class Index extends HttpServlet {
 	    String markNotDoneTask = request.getParameter("markNotDone");
 	    String removeTask = request.getParameter("remove");
 
-	    if (postedMessage != null && !postedMessage.equals("")) {
-	        tasksDAO.addTask(new Task(postedMessage));
-	    }
+	    if (postedMessage != null && postedMessage.length() > 0) {
+            Task task = new Task(postedMessage);
+
+            tasksDAO.addTask(task);
+
+            String datetime = request.getParameter("datetime");
+            if (datetime != null && datetime.length() > 0) {
+                QueueHelper.getInstance().addTask(task, datetime);
+            }
+        }
 
 	    if (markDoneTask != null && !markDoneTask.isEmpty()) {
 	        tasksDAO.markTaskDone(markDoneTask);

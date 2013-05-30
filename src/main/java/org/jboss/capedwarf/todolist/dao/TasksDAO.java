@@ -48,11 +48,15 @@ public class TasksDAO extends AbstractDAO {
         String id = task.getId();
         if (id == null) {
             id = generateId();
+            task.setId(id);
         }
-        getIndex().put(newDocument(id,
+
+        getIndex().put(newDocument(
+            id,
             newField(ID).setText(id),
             newField(TASK_DONE).setText(task.isTaskDone() ? "true" : "false"),
-            newField(MESSAGE).setText(task.getMessage())));
+            newField(MESSAGE).setText(task.getMessage()))
+        );
     }
 
     public List<Task> getTaskList(String q) {
@@ -79,17 +83,33 @@ public class TasksDAO extends AbstractDAO {
         getIndex().delete(id);
     }
 
-    private Task getTaskById(String id) {
+    public Task getTaskById(String id) {
         ScoredDocument doc = getTaskDoc(id);
         return createTask(doc);
     }
 
+    public boolean taskExists(String id) {
+        return getTaskDocs(id).isEmpty() == false;
+    }
+
+    public boolean taskIsDone(String id) {
+        if (taskExists(id)) {
+            Task task = getTaskById(id);
+            return task.isTaskDone();
+        } else {
+            return true;
+        }
+    }
+
+    private Collection<ScoredDocument> getTaskDocs(String id) {
+        return getIndex().search(ID + ":" + id).getResults();
+    }
+
     private ScoredDocument getTaskDoc(String id) {
-        Collection<ScoredDocument> docs = getIndex().search(ID + ":" + id).getResults();
+        Collection<ScoredDocument> docs = getTaskDocs(id);
         if (docs.size() != 1) {
             throw new RuntimeException("Invalid id specified.");
         }
-
         return docs.iterator().next();
     }
 
