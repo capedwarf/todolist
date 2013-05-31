@@ -27,6 +27,7 @@ package org.jboss.capedwarf.todolist.html;
  */
 public class HtmlPage {
 
+    private String head = "";
     private String body = "";
     private final String ctxPath;
 
@@ -40,11 +41,16 @@ public class HtmlPage {
             "<head>\n" +
             "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n" +
             "<title>ToDo List</title>\n" +
-            "<link href=\"" + ctxPath + "/css/bootstrap.min.css\" rel=\"stylesheet\">\n" +
+            "<link href=\"http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css\" rel=\"stylesheet\">\n" +
+            "<link href=\"http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css\" rel=\"stylesheet\">\n" +
             "<link href=\"" + ctxPath + "/css/style.css\" rel=\"stylesheet\">\n" +
+            "<script src=\"http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js\"></script>\n" +
+            "<script src=\"http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js\"></script>\n" +
+            "<script src=\"http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js\"></script>\n" +
+            "<script src=\"http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js\"></script>\n" +
+            head + "\n" +
             "</head>\n" +
             "<body>\n" +
-            "<script src=\"" + ctxPath + "/js/bootstrap.min.js\"></script>\n" +
             "<div class=\"container\">\n" +
             body + "\n" +
             "</div>\n" +
@@ -57,12 +63,26 @@ public class HtmlPage {
     }
 
     public void addInputForm(String q) {
+        this.head += "<script type=\"text/javascript\">" +
+        		"$(document).ready(function() {" +
+                  "$('#datetimepicker').datetimepicker({" +
+                    "format: 'dd/MM/yyyy hh:mm:ss'," +
+                    "language: 'en'" +
+                  "});" +
+                "});" +
+                "</script>";
+
         this.body += "<form method=\"GET\">\n" +
             "<label>New Task</label>\n" +
             "<div class=\"input-append\">\n" +
-            "<input type=\"text\" name=\"message\" placeholder=\"Enter new task ...\"/>\n" +
-            "<button type=\"submit\" class=\"btn\">Add</button>\n" +
-            "<input type=\"text\" name=\"datetime\" placeholder=\"Pick time ... dd/MM/yy hh:mm\"/>\n" +
+            " <input type=\"text\" name=\"message\" placeholder=\"Enter new task ...\"/>\n" +
+            " <button type=\"submit\" class=\"btn\">Add</button>\n" +
+            "</div>\n" +
+            "<div id=\"datetimepicker\" class=\"input-append date\">\n" +
+            " <input type=\"text\" name=\"datetime\" data-format=\"dd/MM/yyyy hh:mm:ss\"></input>\n" +
+            " <span class=\"add-on\">\n" +
+            "  <i data-time-icon=\"icon-time\" data-date-icon=\"icon-calendar\"></i>\n" +
+            " </span>\n" +
             "</div>\n" +
             "<div class=\"input-append\">\n" +
             "<label>Filter</label>\n" +

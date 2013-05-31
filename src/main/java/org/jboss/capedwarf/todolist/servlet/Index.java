@@ -82,14 +82,14 @@ public class Index extends HttpServlet {
     }
 
     protected void doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String loginURL = userService.createLoginURL("/");
+        String loginURL = userService.createLoginURL(request.getContextPath());
         response.sendRedirect(loginURL);
     }
 
     protected void doFetch(HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
         HtmlPage htmlPage = new HtmlPage(request.getContextPath());
         htmlPage.addToBody(HtmlHelper.getTitle("ToDo LiSt - AuDiT LoG"));
-        htmlPage.addToBody(getLogut());
+        htmlPage.addToBody(getLogut(request));
         htmlPage.addToBody(HtmlHelper.auditLogsAsHtml(auditLog.fetch(Long.parseLong(request.getParameter("from")))));
 
         response.setContentType("text/html");
@@ -138,7 +138,7 @@ public class Index extends HttpServlet {
 
         HtmlPage htmlPage = new HtmlPage(request.getContextPath());
         htmlPage.addToBody(HtmlHelper.getTitle("ToDo LiSt - ViEw"));
-        htmlPage.addToBody(getLogut());
+        htmlPage.addToBody(getLogut(request));
 	    htmlPage.addInputForm(q);
 	    htmlPage.addToBody(getToDoList(tasksDAO, q));
 
@@ -148,8 +148,8 @@ public class Index extends HttpServlet {
         out.println(htmlPage.getHtml());
 	}
 
-    private String getLogut() {
-        return HtmlHelper.getLogout();
+    private String getLogut(HttpServletRequest request) {
+        return HtmlHelper.getLogout(request);
     }
 
     private String getToDoList(TasksDAO tasksDAO, String q) {

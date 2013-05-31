@@ -24,6 +24,8 @@ package org.jboss.capedwarf.todolist.html;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import org.jboss.capedwarf.todolist.domain.Task;
@@ -65,9 +67,9 @@ public class HtmlHelper {
         return html;
     }
 
-    public static String getLogout() {
+    public static String getLogout(HttpServletRequest request) {
         UserService userService = UserServiceFactory.getUserService();
-        return "\n<a href=\"" + userService.createLogoutURL("/") + "\" style=\"float:right\">Logout</a><p/>\n";
+        return "\n<a href=\"" + userService.createLogoutURL(request.getContextPath()) + "\" style=\"float:right\">Logout</a><p/>\n";
     }
 
     public static String auditLogsAsHtml(Object[][] logs) {
