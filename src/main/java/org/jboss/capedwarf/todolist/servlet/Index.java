@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +50,8 @@ import org.jboss.capedwarf.todolist.queue.QueueHelper;
 public class Index extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+    private String baseContext;
+
     private AuditLog auditLog;
     private TasksDAO tasksDAO;
     private UserService userService;
@@ -58,8 +61,10 @@ public class Index extends HttpServlet {
     }
 
     @Override
-    public void init() throws ServletException {
-        super.init();
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+
+        baseContext = "/" + config.getServletContext().getContextPath();
 
         auditLog = new DsAuditLog();
         tasksDAO = new TasksDAO();
@@ -82,7 +87,7 @@ public class Index extends HttpServlet {
     }
 
     protected void doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String loginURL = userService.createLoginURL(request.getContextPath());
+        String loginURL = userService.createLoginURL(baseContext);
         response.sendRedirect(loginURL);
     }
 
@@ -149,7 +154,7 @@ public class Index extends HttpServlet {
 	}
 
     private String getLogut(HttpServletRequest request) {
-        return HtmlHelper.getLogout(request);
+        return HtmlHelper.getLogout(baseContext);
     }
 
     private String getToDoList(TasksDAO tasksDAO, String q) {
