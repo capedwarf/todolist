@@ -50,6 +50,7 @@ import org.jboss.capedwarf.todolist.queue.QueueHelper;
 public class Index extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+    private String redirect;
     private String baseContext;
 
     private AuditLog auditLog;
@@ -64,7 +65,14 @@ public class Index extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        baseContext = "/" + config.getServletContext().getContextPath();
+        String contextPath = config.getServletContext().getContextPath();
+        if (contextPath.startsWith("/")) {
+            redirect = contextPath;
+            baseContext = (contextPath.length() > 1) ? contextPath : "";
+        } else {
+            redirect = "/" + contextPath;
+            baseContext = (contextPath.length() > 1) ? ("/" + contextPath) : "";
+        }
 
         auditLog = new DsAuditLog();
         tasksDAO = new TasksDAO();
@@ -87,8 +95,8 @@ public class Index extends HttpServlet {
     }
 
     protected void doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String loginURL = userService.createLoginURL(baseContext);
-        response.sendRedirect(loginURL);
+        String loginURL = userService.createLoginURL(redirect);
+        response.sendRedirect(baseContext + loginURL);
     }
 
     protected void doFetch(HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
@@ -154,7 +162,7 @@ public class Index extends HttpServlet {
 	}
 
     private String getLogut(HttpServletRequest request) {
-        return HtmlHelper.getLogout(baseContext);
+        return HtmlHelper.getLogout(redirect, baseContext);
     }
 
     private String getToDoList(TasksDAO tasksDAO, String q) {
