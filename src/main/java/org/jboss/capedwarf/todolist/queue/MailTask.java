@@ -1,7 +1,6 @@
 package org.jboss.capedwarf.todolist.queue;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import com.google.appengine.api.mail.MailService;
 import com.google.appengine.api.mail.MailServiceFactory;
@@ -32,10 +31,10 @@ public class MailTask implements DeferredTask {
             try {
                 mailService.send(new MailService.Message("noreply@capedwarf.org", email, "ToDo LiSt - NoTiFiCaTiOn", message));
             } catch (IOException e) {
-                System.err.println(e);
+                System.err.println("Error sending mail: " + e.getMessage());
             }
         } else {
-            Logger.getLogger(MailTask.class.getName()).info("Task [" + id + "] already marked as done or removed.");
+            System.out.println("Task [" + id + "] already marked as done or removed.");
         }
     }
 
