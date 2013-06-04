@@ -25,6 +25,7 @@ package org.jboss.capedwarf.todolist.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -128,7 +129,8 @@ public class Index extends HttpServlet {
 
             String datetime = request.getParameter("datetime");
             if (datetime != null && datetime.length() > 0) {
-                QueueHelper.getInstance().addTask(task, datetime);
+                Locale locale = request.getLocale();
+                QueueHelper.getInstance().addTask(task, datetime, locale);
             }
 
             auditLog.log(user, task.getId(), "add");

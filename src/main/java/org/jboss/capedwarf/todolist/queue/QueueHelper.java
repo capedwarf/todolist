@@ -2,6 +2,7 @@ package org.jboss.capedwarf.todolist.queue;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import com.google.appengine.api.taskqueue.Queue;
@@ -29,9 +30,9 @@ public class QueueHelper {
         return INSTANCE;
     }
 
-    public void addTask(Task task, String datetime) {
+    public void addTask(Task task, String datetime, Locale locale) {
         try {
-            Date date = new SimpleDateFormat("dd/MM/yy hh:mm").parse(datetime);
+            Date date = new SimpleDateFormat("dd/MM/yy hh:mm", locale).parse(datetime);
 
             Queue queue = QueueFactory.getDefaultQueue();
             UserService userService = UserServiceFactory.getUserService();
