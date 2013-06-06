@@ -65,9 +65,9 @@ public class HtmlHelper {
         return html;
     }
 
-    public static String getLogout(String redirect, String baseContext) {
+    public static String getLogout(String redirect) {
         UserService userService = UserServiceFactory.getUserService();
-        return "\n<a href=\"" + baseContext + userService.createLogoutURL(redirect) + "\" style=\"float:right\">Logout</a><p/>\n";
+        return "\n<a href=\"" + userService.createLogoutURL(redirect) + "\" style=\"float:right\">Logout</a><p/>\n";
     }
 
     public static String auditLogsAsHtml(Object[][] logs) {

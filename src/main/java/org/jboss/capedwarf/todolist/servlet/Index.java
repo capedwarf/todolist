@@ -52,7 +52,6 @@ public class Index extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
     private String redirect;
-    private String baseContext;
 
     private AuditLog auditLog;
     private TasksDAO tasksDAO;
@@ -69,10 +68,8 @@ public class Index extends HttpServlet {
         String contextPath = config.getServletContext().getContextPath();
         if (contextPath.startsWith("/")) {
             redirect = contextPath;
-            baseContext = (contextPath.length() > 1) ? contextPath : "";
         } else {
             redirect = "/" + contextPath;
-            baseContext = (contextPath.length() > 1) ? ("/" + contextPath) : "";
         }
 
         auditLog = new DsAuditLog();
@@ -97,7 +94,7 @@ public class Index extends HttpServlet {
 
     protected void doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String loginURL = userService.createLoginURL(redirect);
-        response.sendRedirect(baseContext + loginURL);
+        response.sendRedirect(loginURL);
     }
 
     protected void doFetch(HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
@@ -164,7 +161,7 @@ public class Index extends HttpServlet {
 	}
 
     private String getLogut(HttpServletRequest request) {
-        return HtmlHelper.getLogout(redirect, baseContext);
+        return HtmlHelper.getLogout(redirect);
     }
 
     private String getToDoList(TasksDAO tasksDAO, String q) {
