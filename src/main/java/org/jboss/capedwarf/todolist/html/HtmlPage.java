@@ -42,12 +42,12 @@ public class HtmlPage {
             "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n" +
             "<title>ToDo List</title>\n" +
             "<link href=\"http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css\" rel=\"stylesheet\">\n" +
-            "<link href=\"http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css\" rel=\"stylesheet\">\n" +
+            "<link href=\"" + ctxPath + "/css/bootstrap-datetimepicker.min.css\" rel=\"stylesheet\">\n" +
             "<link href=\"" + ctxPath + "/css/style.css\" rel=\"stylesheet\">\n" +
             "<script src=\"http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js\"></script>\n" +
             "<script src=\"http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js\"></script>\n" +
-            "<script src=\"http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js\"></script>\n" +
-            "<script src=\"http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js\"></script>\n" +
+            "<script src=\"" + ctxPath + "/js/bootstrap-datetimepicker.js\"></script>\n" +
+            "<script src=\"" + ctxPath + "/js/bootstrap-datetimepicker.pt-BR.js\"></script>\n" +
             head + "\n" +
             "</head>\n" +
             "<body>\n" +
