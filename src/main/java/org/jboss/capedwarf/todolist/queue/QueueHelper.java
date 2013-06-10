@@ -32,7 +32,7 @@ public class QueueHelper {
 
     public void addTask(Task task, String datetime, Locale locale) {
         try {
-            Date date = new SimpleDateFormat("dd/MM/yy hh:mm", locale).parse(datetime);
+            Date date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", locale).parse(datetime);
 
             Queue queue = QueueFactory.getDefaultQueue();
             UserService userService = UserServiceFactory.getUserService();
